@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # or master, depending on your default branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (Optional, if your project needs it for building)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18" # Adjust as needed for your project
+
+      # This step is crucial for building your static site if it's not just raw HTML/CSS/JS
+      # For a simple project with just index.html in the root, you might not need a 'build' step.
+      # If you have a build process (e.g., 'npm run build'), uncomment and adjust this:
+      # - name: Install dependencies and build
+      #   run: |
+      #     npm install
+      #     npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir:
+            ./ # This is the directory containing your static files.
+            # If your build output is in 'build', 'dist', or 'public', change this to e.g., './build'
+          # If your project is simple and just has index.html in the root, './' is correct.
+          # If you used 'npm run build' and it outputs to 'build/', change 'publish_dir: ./build'
+          # If you want to deploy from a 'docs/' folder, change 'publish_dir: ./docs'
